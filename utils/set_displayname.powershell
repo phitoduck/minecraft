@@ -1,0 +1,4 @@
+$name = read-host "Enter your desired display name"
+$file = "~\AppData\Roaming\.minecraft\launcher_profiles.json"
+$content = get-content $file | %{$_ -replace "eriddoch", $name} 
+set-content $file $content

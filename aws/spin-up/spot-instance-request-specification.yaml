@@ -1,0 +1,61 @@
+#
+#  Spin up a minecraft server with our files:
+#
+#  If these configurations are fine, run:
+#  aws ec2 request-spot-instances --profile personal --cli-input-yaml file://spot-instance-request-specification.yaml
+#
+#  If you need to update the bootstrap-instance.sh, do so and then run:
+#  base64 bootstrap-instance.sh | pbcopy
+#  Then paste that output into the UserData string field below
+#
+#
+#
+# To generate a new yaml file like this (filled with all possible values) run:
+# aws ec2 request-spot-instances --generate-cli-skeleton yaml-input
+#
+# More documentation:
+# https://docs.aws.amazon.com/cli/latest/reference/ec2/request-spot-instances.html
+#
+
+DryRun: false # Checks whether you have the required permissions for the action, without actually making the request, and provides an error response.
+
+InstanceCount: 1 # The maximum number of Spot Instances to launch.
+
+LaunchSpecification: # The launch specification.
+  SecurityGroups: # One or more security groups.
+    - "MinecraftSecurityGroup"
+
+  BlockDeviceMappings: # One or more block device mapping entries.
+    - DeviceName: "/dev/xvda" # The device name (for example, /dev/sdh or xvdh).
+      Ebs: # Parameters used to automatically set up EBS volumes when the instance is launched.
+        DeleteOnTermination: true # Indicates whether the EBS volume is deleted on instance termination.
+        VolumeSize: 8 # The size of the volume, in GiB.
+        VolumeType: gp2 # The volume type. Valid values are: standard, io1, gp2, sc1, st1.
+        Encrypted: false # Indicates whether the encryption state of an EBS volume is changed while being restored from a backing snapshot.
+
+  EbsOptimized: true # Indicates whether the instance is optimized for EBS I/O.
+
+  IamInstanceProfile: # The IAM instance profile.
+    Name: "MinecraftEC2" # The name of the instance profile. Eric: AWS creates an instance profile with the same name as each IAM role you make. The profile contains the IAM role.
+  # ID of MinecraftAMI
+  ImageId: "ami-0d254cd055795bb69"
+
+  # Some sizing prices:
+  # size         $/hour    $/month   network I/O    RAM   Notes
+  # a1.medium    0.0097    7.2168                         Failed with bad parameters April 2nd
+  # a1.large     0.0167    12.42                          Request wasn't fulfilled after 3 hours
+  # a1.xlarge    0.0334    24.8496
+  # i3.large     0.046     34.224
+  # c5n.large    0.034
+  InstanceType: c5n.large # The instance type. Valid values are: t1.micro, t2.nano, t2.micro, t2.small, t2.medium, t2.large, t2.xlarge, t2.2xlarge, t3.nano, t3.micro, t3.small, t3.medium, t3.large, t3.xlarge, t3.2xlarge, t3a.nano, t3a.micro, t3a.small, t3a.medium, t3a.large, t3a.xlarge, t3a.2xlarge, m1.small, m1.medium, m1.large, m1.xlarge, m3.medium, m3.large, m3.xlarge, m3.2xlarge, m4.large, m4.xlarge, m4.2xlarge, m4.4xlarge, m4.10xlarge, m4.16xlarge, m2.xlarge, m2.2xlarge, m2.4xlarge, cr1.8xlarge, r3.large, r3.xlarge, r3.2xlarge, r3.4xlarge, r3.8xlarge, r4.large, r4.xlarge, r4.2xlarge, r4.4xlarge, r4.8xlarge, r4.16xlarge, r5.large, r5.xlarge, r5.2xlarge, r5.4xlarge, r5.8xlarge, r5.12xlarge, r5.16xlarge, r5.24xlarge, r5.metal, r5a.large, r5a.xlarge, r5a.2xlarge, r5a.4xlarge, r5a.8xlarge, r5a.12xlarge, r5a.16xlarge, r5a.24xlarge, r5d.large, r5d.xlarge, r5d.2xlarge, r5d.4xlarge, r5d.8xlarge, r5d.12xlarge, r5d.16xlarge, r5d.24xlarge, r5d.metal, r5ad.large, r5ad.xlarge, r5ad.2xlarge, r5ad.4xlarge, r5ad.8xlarge, r5ad.12xlarge, r5ad.16xlarge, r5ad.24xlarge, x1.16xlarge, x1.32xlarge, x1e.xlarge, x1e.2xlarge, x1e.4xlarge, x1e.8xlarge, x1e.16xlarge, x1e.32xlarge, i2.xlarge, i2.2xlarge, i2.4xlarge, i2.8xlarge, i3.large, i3.xlarge, i3.2xlarge, i3.4xlarge, i3.8xlarge, i3.16xlarge, i3.metal, i3en.large, i3en.xlarge, i3en.2xlarge, i3en.3xlarge, i3en.6xlarge, i3en.12xlarge, i3en.24xlarge, i3en.metal, hi1.4xlarge, hs1.8xlarge, c1.medium, c1.xlarge, c3.large, c3.xlarge, c3.2xlarge, c3.4xlarge, c3.8xlarge, c4.large, c4.xlarge, c4.2xlarge, c4.4xlarge, c4.8xlarge, c5.large, c5.xlarge, c5.2xlarge, c5.4xlarge, c5.9xlarge, c5.12xlarge, c5.18xlarge, c5.24xlarge, c5.metal, c5d.large, c5d.xlarge, c5d.2xlarge, c5d.4xlarge, c5d.9xlarge, c5d.12xlarge, c5d.18xlarge, c5d.24xlarge, c5d.metal, c5n.large, c5n.xlarge, c5n.2xlarge, c5n.4xlarge, c5n.9xlarge, c5n.18xlarge, cc1.4xlarge, cc2.8xlarge, g2.2xlarge, g2.8xlarge, g3.4xlarge, g3.8xlarge, g3.16xlarge, g3s.xlarge, g4dn.xlarge, g4dn.2xlarge, g4dn.4xlarge, g4dn.8xlarge, g4dn.12xlarge, g4dn.16xlarge, cg1.4xlarge, p2.xlarge, p2.8xlarge, p2.16xlarge, p3.2xlarge, p3.8xlarge, p3.16xlarge, p3dn.24xlarge, d2.xlarge, d2.2xlarge, d2.4xlarge, d2.8xlarge, f1.2xlarge, f1.4xlarge, f1.16xlarge, m5.large, m5.xlarge, m5.2xlarge, m5.4xlarge, m5.8xlarge, m5.12xlarge, m5.16xlarge, m5.24xlarge, m5.metal, m5a.large, m5a.xlarge, m5a.2xlarge, m5a.4xlarge, m5a.8xlarge, m5a.12xlarge, m5a.16xlarge, m5a.24xlarge, m5d.large, m5d.xlarge, m5d.2xlarge, m5d.4xlarge, m5d.8xlarge, m5d.12xlarge, m5d.16xlarge, m5d.24xlarge, m5d.metal, m5ad.large, m5ad.xlarge, m5ad.2xlarge, m5ad.4xlarge, m5ad.8xlarge, m5ad.12xlarge, m5ad.16xlarge, m5ad.24xlarge, h1.2xlarge, h1.4xlarge, h1.8xlarge, h1.16xlarge, z1d.large, z1d.xlarge, z1d.2xlarge, z1d.3xlarge, z1d.6xlarge, z1d.12xlarge, z1d.metal, u-6tb1.metal, u-9tb1.metal, u-12tb1.metal, u-18tb1.metal, u-24tb1.metal, a1.medium, a1.large, a1.xlarge, a1.2xlarge, a1.4xlarge, a1.metal, m5dn.large, m5dn.xlarge, m5dn.2xlarge, m5dn.4xlarge, m5dn.8xlarge, m5dn.12xlarge, m5dn.16xlarge, m5dn.24xlarge, m5n.large, m5n.xlarge, m5n.2xlarge, m5n.4xlarge, m5n.8xlarge, m5n.12xlarge, m5n.16xlarge, m5n.24xlarge, r5dn.large, r5dn.xlarge, r5dn.2xlarge, r5dn.4xlarge, r5dn.8xlarge, r5dn.12xlarge, r5dn.16xlarge, r5dn.24xlarge, r5n.large, r5n.xlarge, r5n.2xlarge, r5n.4xlarge, r5n.8xlarge, r5n.12xlarge, r5n.16xlarge, r5n.24xlarge, inf1.xlarge, inf1.2xlarge, inf1.6xlarge, inf1.24xlarge.
+  KeyName: "eric-personal" # The name of the key pair.
+  Monitoring: # Indicates whether basic or detailed monitoring is enabled for the instance.
+    Enabled: true # [REQUIRED] Indicates whether detailed monitoring is enabled.
+  # Eric result of: base64 bootstrap-instance.sh | pbcopy
+  UserData: "IyEvYmluL2Jhc2gKCiMgY29uc3RhbnRzCmV4cG9ydCBNSU5FQ1JBRlRfRklMRV9TWVNURU1fSUQ9ImZzLWMxNTQyNzZiIgpleHBvcnQgU1BJR09UX1ZFUlNJT049IjEuMTUuMiIgIyBzaG91bGQgY29ycmVzcG9uZCB0byBtaW5lY3JhZnQgdmVyc2lvbgpleHBvcnQgQVdTX1JFR0lPTj0idXMtd2VzdC0yIgpleHBvcnQgRUxBU1RJQ19JUD0iNTQuMTg0LjIzMi45MiIKCiMgYXNzb2NpYXRlIHRoZSBFbGFzdGljIElQIHdpdGggdGhpcyBpbnN0YW5jZQojIHRoaXMgaXAtYWRkcmVzcyBpcyBvbmx5IGFjY2Vzc2libGUgZnJvbSB3aXRoaW4gYW4gRUMyIGluc3RhbmNlLCBhbmQgY2FuIGJlIHVzZWQgdG8gcmV0cmlldmUgaW5zdGFuY2UgbWV0YWRhdGEKIyBSZWFkIGFib3V0IGl0IGhlcmU6IGh0dHBzOi8vc3RhY2tvdmVyZmxvdy5jb20vcXVlc3Rpb25zLzYyNTY0NC9ob3ctdG8tZ2V0LXRoZS1pbnN0YW5jZS1pZC1mcm9tLXdpdGhpbi1hbi1lYzItaW5zdGFuY2UKZXhwb3J0IEVDMl9JTlNUQU5DRV9JRD1gd2dldCAtcSAtTyAtIGh0dHA6Ly8xNjkuMjU0LjE2OS4yNTQvbGF0ZXN0L21ldGEtZGF0YS9pbnN0YW5jZS1pZGAKYXdzIGVjMiBhc3NvY2lhdGUtYWRkcmVzcyAtLWluc3RhbmNlLWlkICIkRUMyX0lOU1RBTkNFX0lEIiAtLXB1YmxpYy1pcCAiJEVMQVNUSUNfSVAiIC0tcmVnaW9uICIkQVdTX1JFR0lPTiIKCiMgdXBkYXRlIGFuZCBpbnN0YWxsIGRvY2tlcgojIE5PVEUsIC15IG1ha2VzIHl1bSBhbnN3ZXIgeWVzIHRvIGFsbCBwcm9tcHRzCnN1ZG8geXVtIHVwZGF0ZSAteQpzdWRvIHl1bSAteSBpbnN0YWxsIGRvY2tlcgpzdWRvIHNlcnZpY2UgZG9ja2VyIHN0YXJ0CgojIG1vdW50IHRoZSBuZXR3b3JrIGZpbGUgc3lzdGVtIHdoZXJlIHRoZSBtaW5lY3JhZnQgZmlsZXMgYXJlIGtlcHQKc3VkbyB5dW0gaW5zdGFsbCAteSBhbWF6b24tZWZzLXV0aWxzCnN1ZG8gbWtkaXIgLwpzdWRvIG1rZGlyIGVmcwpzdWRvIG1vdW50IC10IGVmcyAiJE1JTkVDUkFGVF9GSUxFX1NZU1RFTV9JRCI6LyBlZnMvCmNkIGVmcwoKIyBjcmVhdGUgYSBtaW5lY3JhZnQtc2VydmVyIGZvbGRlciBpZiBub3QgZXhpc3RzCltbIC1kIG1pbmVjcmFmdC1zZXJ2ZXIgXV0gfHwgbWtkaXIgbWluZWNyYWZ0LXNlcnZlcgpjZCBtaW5lY3JhZnQtc2VydmVyCgojIHJ1biBkb2NrZXIgY29tbWFuZCB0byBzdGFydCBzZXJ2ZXIKIyBkb2NrZXIgaW1hZ2UgZ2l0aHViOiBodHRwczovL2dpdGh1Yi5jb20vbmltbWlzL2RvY2tlci1zcGlnb3QKc3VkbyBkb2NrZXIgcnVuIC0tcm0gXAogICAgLXAgMjU1NjU6MjU1NjUgXAogICAgLWUgRVVMQT10cnVlIFwKICAgIC12ICIkUFdEIjovbWluZWNyYWZ0IFwKICAgIC1lIFNQSUdPVF9WRVI9IiRTUElHT1RfVkVSU0lPTiIgbmltbWlzL3NwaWdvdAoKIyBydW4gdGhpcyBjb21tYW5kIHRvIHVubW91bnQgdGhlIGZpbGUgc3lzdGVtIGJlZm9yZSBzaHV0dGluZyBvZmYgdGhlIGluc3RhbmNlCiMgY2QgfiAmJiB1bW91bnQgZWZzICMgbm90IGEgdHlwbzogY29tbWFuZCBpcyB1bW91bnQKCgo="
+
+SpotPrice: "0.05" # The maximum price per hour that you are willing to pay for a Spot Instance.
+
+Type: one-time # The Spot Instance request type. Valid values are: one-time, persistent.
+
+InstanceInterruptionBehavior: terminate # The behavior when a Spot Instance is interrupted. Valid values are: hibernate, stop, terminate.
