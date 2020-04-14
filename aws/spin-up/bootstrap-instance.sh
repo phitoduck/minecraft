@@ -17,6 +17,7 @@ aws ec2 associate-address --instance-id "$EC2_INSTANCE_ID" --public-ip "$ELASTIC
 sudo yum update -y
 sudo yum -y install docker
 sudo service docker start
+sudo usermod -a -G docker ec2-user # allow ec2-user to use docker commands
 
 # mount the network file system where the minecraft files are kept
 sudo yum install -y amazon-efs-utils
@@ -31,9 +32,14 @@ cd minecraft-server
 
 # run docker command to start server
 # docker image github: https://github.com/nimmis/docker-spigot
-sudo docker run --rm \
+sudo docker run -d \
+    --name minecraft \
     -p 25565:25565 \
+    -p 25575:25575 \
+    -p 8123:8123 \
     -e EULA=true \
+    -e MC_MINMEM=1g \
+    -e MC_MAXMEM=7g \
     -v "$PWD":/minecraft \
     -e SPIGOT_VER="$SPIGOT_VERSION" nimmis/spigot
 

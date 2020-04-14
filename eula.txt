@@ -1,1 +1,1 @@
-eula=TRUE
+eula=true
